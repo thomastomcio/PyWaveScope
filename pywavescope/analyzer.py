@@ -38,15 +38,14 @@ def parse_vcd(path: str | Path) -> Waveform:
                 continue
 
             if in_definitions:
+                parts = line.split()
                 if line.startswith("$scope"):
-                    parts = line.split()
                     if len(parts) >= 3:
                         scope_stack.append(parts[2])
                 elif line.startswith("$upscope"):
                     if scope_stack:
                         scope_stack.pop()
                 elif line.startswith("$var"):
-                    parts = line.split()
                     if len(parts) >= 5:
                         symbol = parts[3]
                         signal_name = parts[4]
