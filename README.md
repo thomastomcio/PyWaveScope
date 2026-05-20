@@ -12,5 +12,5 @@ HDL simulation waveform analysis library.
 ## Example
 
 ```bash
-python /home/runner/work/PyWaveScope/PyWaveScope/examples/analyze_wlf.py path/to/sim.wlf --clock tb.clk --signal tb.valid
+python examples/analyze_wlf.py path/to/sim.wlf --clock tb.clk --signal tb.valid
 ```
