@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import tempfile
@@ -25,8 +26,9 @@ def load_wlf(path: str | Path, *, converter: str = "wlf2vcd") -> Waveform:
             "Install Questa/ModelSim tools or provide a converter available in PATH."
         )
 
-    with tempfile.NamedTemporaryFile(suffix=".vcd", delete=False) as temp_file:
-        vcd_path = Path(temp_file.name)
+    fd, temp_path = tempfile.mkstemp(suffix=".vcd")
+    os.close(fd)
+    vcd_path = Path(temp_path)
 
     conversion_commands = [
         [converter, str(wlf_path), str(vcd_path)],
