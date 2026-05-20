@@ -82,16 +82,18 @@ def parse_vcd(path: str | Path) -> Waveform:
 
 
 def count_rising_edges(waveform: Waveform, signal: str, *, start_time: int = 0) -> int:
-    samples = [sample for sample in waveform.samples(signal) if sample.time >= start_time]
-    if not samples:
-        return 0
-
     count = 0
-    previous = samples[0].value
-    for sample in samples[1:]:
-        if previous != "1" and sample.value == "1":
+    previous: str | None = None
+
+    for sample in waveform.samples(signal):
+        if sample.time < start_time:
+            previous = sample.value
+            continue
+
+        if previous is not None and previous != "1" and sample.value == "1":
             count += 1
         previous = sample.value
+
     return count
 
 

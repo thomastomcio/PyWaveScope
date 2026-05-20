@@ -21,6 +21,20 @@ class AnalyzerTests(unittest.TestCase):
 
         self.assertEqual(count_rising_edges(waveform, "tb.clk"), 2)
 
+    def test_count_rising_edges_with_start_time_crossing_transition(self):
+        waveform = Waveform(
+            {
+                "tb.clk": [
+                    SignalSample(0, "0"),
+                    SignalSample(5, "1"),
+                    SignalSample(10, "0"),
+                    SignalSample(15, "1"),
+                ]
+            }
+        )
+
+        self.assertEqual(count_rising_edges(waveform, "tb.clk", start_time=5), 2)
+
     def test_first_assertion_time(self):
         waveform = Waveform(
             {
