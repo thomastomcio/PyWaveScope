@@ -61,7 +61,7 @@ def parse_vcd(path: str | Path) -> Waveform:
                 current_time = int(line[1:])
                 continue
 
-            if line[0] in {"0", "1", "x", "z"} and len(line) > 1:
+            if line[0] in {"0", "1", "x", "z"} and len(line) >= 2:
                 value = line[0]
                 symbol = line[1:]
             elif line.startswith("b"):
