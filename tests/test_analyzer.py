@@ -56,11 +56,14 @@ $enddefinitions $end
             temp.write(content)
             path = Path(temp.name)
 
-        waveform = parse_vcd(path)
+        try:
+            waveform = parse_vcd(path)
 
-        self.assertIn("tb.clk", waveform.signals)
-        self.assertIn("tb.valid", waveform.signals)
-        self.assertEqual(first_assertion_time(waveform, "tb.valid"), 10)
+            self.assertIn("tb.clk", waveform.signals)
+            self.assertIn("tb.valid", waveform.signals)
+            self.assertEqual(first_assertion_time(waveform, "tb.valid"), 10)
+        finally:
+            path.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

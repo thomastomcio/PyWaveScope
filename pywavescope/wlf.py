@@ -33,14 +33,17 @@ def load_wlf(path: str | Path, *, converter: str = "wlf2vcd") -> Waveform:
         [converter, "-o", str(vcd_path), str(wlf_path)],
     ]
 
-    last_error: Exception | None = None
-    for command in conversion_commands:
-        try:
-            subprocess.run(command, check=True, capture_output=True, text=True)
-            return parse_vcd(vcd_path)
-        except subprocess.CalledProcessError as error:
-            last_error = error
+    try:
+        last_error: Exception | None = None
+        for command in conversion_commands:
+            try:
+                subprocess.run(command, check=True, capture_output=True, text=True)
+                return parse_vcd(vcd_path)
+            except subprocess.CalledProcessError as error:
+                last_error = error
 
-    raise WLFConversionError(
-        f"Unable to convert WLF file '{wlf_path}' to VCD with '{converter}'."
-    ) from last_error
+        raise WLFConversionError(
+            f"Unable to convert WLF file '{wlf_path}' to VCD with '{converter}'."
+        ) from last_error
+    finally:
+        vcd_path.unlink(missing_ok=True)
