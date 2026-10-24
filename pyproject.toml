@@ -9,5 +9,11 @@ description = "HDL waveform analysis toolkit for WLF simulation outputs"
 readme = "README.md"
 requires-python = ">=3.9"
 
+[project.gui-scripts]
+pywavescope-gui = "pywavescope.gui:main"
+
 [tool.setuptools]
 packages = ["pywavescope"]
+
+[project.optional-dependencies]
+gui = ["PyQt6>=6.4"]

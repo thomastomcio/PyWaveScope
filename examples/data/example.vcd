@@ -1,0 +1,39 @@
+$date today $end
+$timescale 1ns $end
+$scope module tb $end
+$var wire 1 ! clk $end
+$var wire 1 " rst $end
+$var wire 1 # valid $end
+$var wire 4 $ data [3:0] $end
+$upscope $end
+$enddefinitions $end
+#0
+0!
+1"
+0#
+b0000 $
+#10
+1!
+#20
+0!
+0"
+#30
+1!
+#40
+0!
+1#
+b1010 $
+#50
+1!
+#60
+0!
+#70
+1!
+b0101 $
+#80
+0!
+0#
+#90
+1!
+#100
+0!

@@ -8,7 +8,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from .analyzer import Waveform, parse_vcd
+from .vcd_parser import parse_vcd
+from .waveform import Waveform
 
 
 class WLFConversionError(RuntimeError):

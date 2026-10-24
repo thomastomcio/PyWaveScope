@@ -1,0 +1,1 @@
+PLACEHOLDER: not a real WLF file. Use with examples/fake_wlf2vcd.py (which ignores this content and emits example.vcd) to exercise the WLF loading path without Questa/ModelSim.
