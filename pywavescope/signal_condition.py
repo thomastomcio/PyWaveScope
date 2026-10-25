@@ -40,3 +40,73 @@ class SignalCondition:
     def signal(cls, name: str, value: str = "1") -> SignalCondition:
         """Condition that holds while the signal ``name`` equals ``value``."""
         return cls(lambda waveform, time: waveform.value_at(name, time) == value)
+
+    @classmethod
+    def parse(cls, expression: str) -> tuple[SignalCondition, list[str]]:
+        """Parse e.g. ``clk & ~rst | (bus=0101)``; return the condition and its signal names.
+
+        ``name`` means ``name=1``; ``&``, ``|``, ``~`` and parentheses are supported.
+        """
+        tokens: list[str] = []
+        word = ""
+        for char in expression:
+            if char in "&|~()" or char.isspace():
+                if word:
+                    tokens.append(word)
+                    word = ""
+                if not char.isspace():
+                    tokens.append(char)
+            else:
+                word += char
+        if word:
+            tokens.append(word)
+        if not tokens:
+            raise ValueError("Empty condition")
+
+        names: list[str] = []
+        position = 0
+
+        def peek() -> str | None:
+            return tokens[position] if position < len(tokens) else None
+
+        def take() -> str:
+            nonlocal position
+            token = peek()
+            if token is None:
+                raise ValueError("Unexpected end of condition")
+            position += 1
+            return token
+
+        def parse_or() -> SignalCondition:
+            result = parse_and()
+            while peek() == "|":
+                take()
+                result = result | parse_and()
+            return result
+
+        def parse_and() -> SignalCondition:
+            result = parse_unary()
+            while peek() == "&":
+                take()
+                result = result & parse_unary()
+            return result
+
+        def parse_unary() -> SignalCondition:
+            token = take()
+            if token == "~":
+                return ~parse_unary()
+            if token == "(":
+                result = parse_or()
+                if take() != ")":
+                    raise ValueError("Expected ')'")
+                return result
+            if token in ("&", "|", ")"):
+                raise ValueError(f"Unexpected '{token}'")
+            name, _, value = token.partition("=")
+            names.append(name)
+            return cls.signal(name, value or "1")
+
+        condition = parse_or()
+        if position != len(tokens):
+            raise ValueError(f"Unexpected '{tokens[position]}'")
+        return condition, names
